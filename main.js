@@ -35,6 +35,25 @@ function init() {
     // Add mousemove event listener to the canvas for hover detection
     renderer.domElement.addEventListener("mousemove", onHover, false);
 
+    scene.background = new THREE.Color(0xFFFFFF);
+
+    //axes helper
+    const axesHelper = new THREE.AxesHelper(10);
+    scene.add(axesHelper);
+
+    let light = new THREE.AmbientLight(0xffffff, 0.5);
+    light.position.set(2, 0, 2);
+    scene.add(light);
+
+    //GLTF loader
+    const loader = new THREE.GLTFLoader();
+    loader.load('scene.gltf', function(gltf){
+        scene.add(gltf.scene);
+    });
+
+
+
+
     // Start animation
     animate();
 }
