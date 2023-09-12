@@ -32,6 +32,9 @@ function init() {
     // Add click event listener to the canvas
     renderer.domElement.addEventListener("click", onClick, false);
 
+    // Add mousemove event listener to the canvas for hover detection
+    renderer.domElement.addEventListener("mousemove", onHover, false);
+
     // Start animation
     animate();
 }
@@ -67,6 +70,41 @@ function onClick(event) {
             console.log("Front side clicked");
         } else if (faceNormal.z === -1) {
             console.log("Back side clicked");
+        }
+    }
+}
+
+// Hover function
+function onHover(event) {
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    // Calculate mouse position
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Set the ray's origin and direction
+    raycaster.setFromCamera(mouse, camera);
+
+    // Check for intersections with the cube
+    const intersects = raycaster.intersectObject(cube);
+
+    if (intersects.length > 0) {
+        // Determine which side is being hovered based on the face normal
+        const faceNormal = intersects[0].face.normal;
+
+        if (faceNormal.x === 1) {
+            console.log("Hovering over the Right side");
+        } else if (faceNormal.x === -1) {
+            console.log("Hovering over the Left side");
+        } else if (faceNormal.y === 1) {
+            console.log("Hovering over the Top side");
+        } else if (faceNormal.y === -1) {
+            console.log("Hovering over the Bottom side");
+        } else if (faceNormal.z === 1) {
+            console.log("Hovering over the Front side");
+        } else if (faceNormal.z === -1) {
+            console.log("Hovering over the Back side");
         }
     }
 }
