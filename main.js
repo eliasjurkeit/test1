@@ -46,10 +46,10 @@ function init() {
     scene.add(light);
 
     //GLTF loader
-    const loader = new THREE.GLTFLoader();
-    loader.load('scene.gltf', function(gltf){
-        scene.add(gltf.scene);
-    });
+    // const loader = new THREE.GLTFLoader();
+    // loader.load('scene.gltf', function(gltf){
+    //     scene.add(gltf.scene);
+    // });
 
 
 
