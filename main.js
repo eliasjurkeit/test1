@@ -1,7 +1,4 @@
-//import THREE
 import * as THREE from 'three';
-
-//import CSS
 import './style.css';
 import {color} from "three/nodes";
 
@@ -36,19 +33,6 @@ let intersects = [];
 // Handle mouse move events
 document.addEventListener('mousemove', onMouseMove);
 
-// Add a hover event listener to the cube
-cube.addEventListener('mouseenter', () => {
-    // Mouse is over the cube
-    document.getElementById("label").classList.remove("hidden");
-});
-
-// Add a mouseleave event listener to the cube
-cube.addEventListener('mouseleave', () => {
-    // Mouse is not over the cube
-    document.getElementById("label").classList.add("hidden");
-});
-
-
 function onMouseMove(event) {
     // Calculate mouse position in normalized device coordinates
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -78,27 +62,21 @@ function animate() {
         const faceNormal = intersects[0].face.normal;
 
         if (faceNormal.x === 1) {
-            console.log("Hovering over the Right side");
             document.getElementById("label").textContent = `Hovering over right face`;
             document.getElementById("label").classList.remove("hidden");
         } else if (faceNormal.x === -1) {
-            console.log("Hovering over the Left side");
             document.getElementById("label").textContent = `Hovering over left face`;
             document.getElementById("label").classList.remove("hidden");
         } else if (faceNormal.y === 1) {
-            console.log("Hovering over the Top side");
             document.getElementById("label").textContent = `Hovering over top face`;
             document.getElementById("label").classList.remove("hidden");
         } else if (faceNormal.y === -1) {
-            console.log("Hovering over the Bottom side");
             document.getElementById("label").textContent = `Hovering over bottom face`;
             document.getElementById("label").classList.remove("hidden");
         } else if (faceNormal.z === 1) {
-            console.log("Hovering over the Front side");
             document.getElementById("label").textContent = `Hovering over front face`;
             document.getElementById("label").classList.remove("hidden");
         } else if (faceNormal.z === -1) {
-            console.log("Hovering over the Back side");
             document.getElementById("label").textContent = `Hovering over back face`;
             document.getElementById("label").classList.remove("hidden");
         }
@@ -106,7 +84,6 @@ function animate() {
         // Mouse is not over the cube
         document.getElementById("label").classList.add("hidden");
     }
-
 }
 
 animate();
