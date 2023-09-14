@@ -1,134 +1,56 @@
-import './style.css'
+//import THREE
 import * as THREE from 'three';
 
-// Define variables
-let scene, camera, renderer, cube;
+//import CSS
+import './style.css';
 
 // Initialize Three.js scene
-function init() {
-    scene = new THREE.Scene();
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById("container").appendChild(renderer.domElement);
 
-    // Create a camera
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+// Create a cube
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
 
-    // Create a renderer
-    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("canvas") });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+// Set initial position of the cube
+cube.position.set(0, 0, -5);
 
-    // Create a cube
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const materials = [
-        new THREE.MeshBasicMaterial({ color: 0xff0000 }), // Right side (red)
-        new THREE.MeshBasicMaterial({ color: 0x00ff00 }), // Left side (green)
-        new THREE.MeshBasicMaterial({ color: 0x0000ff }), // Top side (blue)
-        new THREE.MeshBasicMaterial({ color: 0xffff00 }), // Bottom side (yellow)
-        new THREE.MeshBasicMaterial({ color: 0xff00ff }), // Front side (magenta)
-        new THREE.MeshBasicMaterial({ color: 0x00ffff })  // Back side (cyan)
-    ];
-    cube = new THREE.Mesh(geometry, materials);
-    scene.add(cube);
+// Create a raycaster for mouse interactions
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
 
-    // Add click event listener to the canvas
-    renderer.domElement.addEventListener("click", onClick, false);
+// Handle mouse move events
+document.addEventListener('mousemove', onMouseMove);
 
-    // Add mousemove event listener to the canvas for hover detection
-    renderer.domElement.addEventListener("mousemove", onHover, false);
-
-    scene.background = new THREE.Color(0xFFFFFF);
-
-    //axes helper
-    const axesHelper = new THREE.AxesHelper(10);
-    scene.add(axesHelper);
-
-    let light = new THREE.AmbientLight(0xffffff, 0.5);
-    light.position.set(2, 0, 2);
-    scene.add(light);
-
-    //GLTF loader
-    const loader = new THREE.GLTFLoader();
-    loader.load('scene.gltf', function(gltf){
-        scene.add(gltf.scene);
-    });
-
-
-
-
-    // Start animation
-    animate();
-}
-
-// Handle click event
-function onClick(event) {
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    // Calculate mouse position
+function onMouseMove(event) {
+    // Calculate mouse position in normalized device coordinates
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    // Set the ray's origin and direction
+    // Update the raycaster
     raycaster.setFromCamera(mouse, camera);
 
     // Check for intersections with the cube
     const intersects = raycaster.intersectObject(cube);
 
     if (intersects.length > 0) {
-        // Determine which side was clicked based on the face normal
-        const faceNormal = intersects[0].face.normal;
-
-        if (faceNormal.x === 1) {
-            console.log("Right side clicked");
-        } else if (faceNormal.x === -1) {
-            console.log("Left side clicked");
-        } else if (faceNormal.y === 1) {
-            console.log("Top side clicked");
-        } else if (faceNormal.y === -1) {
-            console.log("Bottom side clicked");
-        } else if (faceNormal.z === 1) {
-            console.log("Front side clicked");
-        } else if (faceNormal.z === -1) {
-            console.log("Back side clicked");
-        }
+        // Mouse is over the cube
+        document.getElementById("label").classList.remove("hidden");
+    } else {
+        // Mouse is not over the cube
+        document.getElementById("label").classList.add("hidden");
     }
 }
 
-// Hover function
-function onHover(event) {
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
+// Set up camera position
+camera.position.z = 5;
 
-    // Calculate mouse position
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    // Set the ray's origin and direction
-    raycaster.setFromCamera(mouse, camera);
-
-    // Check for intersections with the cube
-    const intersects = raycaster.intersectObject(cube);
-
-    if (intersects.length > 0) {
-        // Determine which side is being hovered based on the face normal
-        const faceNormal = intersects[0].face.normal;
-
-        if (faceNormal.x === 1) {
-            console.log("Hovering over the Right side");
-        } else if (faceNormal.x === -1) {
-            console.log("Hovering over the Left side");
-        } else if (faceNormal.y === 1) {
-            console.log("Hovering over the Top side");
-        } else if (faceNormal.y === -1) {
-            console.log("Hovering over the Bottom side");
-        } else if (faceNormal.z === 1) {
-            console.log("Hovering over the Front side");
-        } else if (faceNormal.z === -1) {
-            console.log("Hovering over the Back side");
-        }
-    }
-}
-
-// Animation function
+// Create an animation loop
 function animate() {
     requestAnimationFrame(animate);
 
@@ -136,23 +58,7 @@ function animate() {
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
 
-    // Render the scene
     renderer.render(scene, camera);
 }
 
-// Resize event handler
-function onWindowResize() {
-    const newWidth = window.innerWidth;
-    const newHeight = window.innerHeight;
-
-    camera.aspect = newWidth / newHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize(newWidth, newHeight);
-}
-
-// Listen for window resize events
-window.addEventListener("resize", onWindowResize);
-
-// Initialize the app
-init();
+animate();
