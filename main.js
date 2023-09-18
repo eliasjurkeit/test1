@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import './style.css';
-import {color} from "three/nodes";
+import {int} from "three/nodes";
 
 // Initialize Three.js scene
 const container = document.getElementById('container');
-
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x89CFF0);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -12,15 +11,15 @@ const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 container.appendChild(renderer.domElement);
 
-// Create a cube
+// Create cubes
 const geometry = new THREE.BoxGeometry();
-const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+const wireframeMaterial = new THREE.LineBasicMaterial({color: 0x000000});
 const cube = new THREE.LineSegments(new THREE.WireframeGeometry(geometry), wireframeMaterial);
 cube.scale.set(3, 3, 3);
 scene.add(cube);
 
 const geometry1 = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, opacity: 0.5, transparent: true });
+const material = new THREE.MeshBasicMaterial({color: 0x00ff00, opacity: 0.5, transparent: true});
 const cube1 = new THREE.Mesh(geometry1, material);
 cube1.scale.set(3, 3, 3);
 scene.add(cube1);
@@ -31,11 +30,17 @@ cube1.position.set(0, 0, -5);
 
 
 //--------------------------------------------------------------------------------------------------------------------------
-
+var el = document.getElementById("cursor"), elWidth = el.offsetWidth, elHeight = el.offsetHeight,
+    width = window.innerWidth, height = window.innerHeight, target = {
+        x: width / 2, y: height / 2
+    }, position = {
+        x: height, y: width
+    }, ease = 0.09;
 
 // Create a raycaster for mouse interactions
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+const mouse2 = {x: int, y: int}
 
 let intersects = [];
 
@@ -46,6 +51,15 @@ function onMouseMove(event) {
     // Calculate mouse position in normalized device coordinates
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Get mouse coordinates for normal mouse
+    // mouse2.x = event.clientX
+    // mouse2.y = event.clientY
+
+    target.x = event.clientX;
+    target.y = event.clientY;
+
+    // document.getElementById("cursor").style.transform = `translate3d(${mouse2.x}px, ${mouse2.y}px, 0)`;
 }
 
 // Set up camera position
@@ -54,6 +68,14 @@ camera.position.z = 5;
 // Create an animation loop
 function animate() {
     requestAnimationFrame(animate);
+
+    var dx = target.x - position.x, dy = target.y - position.y, vx = dx * ease, vy = dy * ease;
+
+    position.x += vx;
+    position.y += vy;
+
+    el.style.left = (position.x - elWidth / 2).toFixed() + "px";
+    el.style.top = (position.y - elHeight / 2).toFixed() + "px";
 
     // Rotate the cube
     cube.rotation.x += 0.01;
@@ -99,3 +121,5 @@ function animate() {
 }
 
 animate();
+
+//---------------------------------------------------------------------------------------------------------------------

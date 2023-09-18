@@ -6,6 +6,7 @@ body {
     margin: 0;
     overflow: hidden;
     position: relative;
+    cursor: none;
 }
 
 #container {
@@ -14,11 +15,27 @@ body {
 
 #popup{
     position: fixed;
-    transition: opacity 0.3s ease;
+    transition: opacity 1s ease;
     width: 100%;
     background-color: black;
     height: 5%;
     bottom: 0;
     color: #FFF; /* Text color */
     font-size: 2rem;
+}
+
+/*#cursor{*/
+/*    width: 20px;*/
+/*    height: 20px;*/
+/*    border: 2px solid #fff;*/
+/*    border-radius: 50%;*/
+/*}*/
+
+[id="cursor"] {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    background-color: #9370db;
+    border-radius: 50%;
+    border: 2px solid #0f0;
 }
