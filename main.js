@@ -1,83 +1,64 @@
 import * as THREE from 'three';
 import './style.css';
-import {int} from "three/nodes";
 
-// Initialize Three.js scene
 const container = document.getElementById('container');
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x89CFF0);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-const renderer = new THREE.WebGLRenderer({antialias: true});
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 container.appendChild(renderer.domElement);
 
-// Create cubes
 const geometry = new THREE.BoxGeometry();
-const wireframeMaterial = new THREE.LineBasicMaterial({color: 0x000000});
+const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
 const cube = new THREE.LineSegments(new THREE.WireframeGeometry(geometry), wireframeMaterial);
 cube.scale.set(3, 3, 3);
 scene.add(cube);
 
-const geometry1 = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({color: 0x00ff00, opacity: 0.5, transparent: true});
-const cube1 = new THREE.Mesh(geometry1, material);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, opacity: 0.5, transparent: true });
+const cube1 = new THREE.Mesh(geometry, material);
 cube1.scale.set(3, 3, 3);
 scene.add(cube1);
 
-// Set initial position of the cube
 cube.position.set(0, 0, -5);
 cube1.position.set(0, 0, -5);
 
+camera.position.z = 5;
 
-//--------------------------------------------------------------------------------------------------------------------------
-var el = document.getElementById("cursor"), elWidth = el.offsetWidth, elHeight = el.offsetHeight,
-    width = window.innerWidth, height = window.innerHeight, target = {
-        x: width / 2, y: height / 2
-    }, position = {
-        x: height, y: width
-    }, ease = 0.09;
-
-// Create a raycaster for mouse interactions
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-const mouse2 = {x: int, y: int}
 
-let intersects = [];
+const el = document.getElementById("cursor");
+const elWidth = el.offsetWidth;
+const elHeight = el.offsetHeight;
+const { innerWidth: width, innerHeight: height } = window;
+const target = { x: width / 2, y: height / 2 };
+const position = { x: height, y: width };
+const ease = 0.085;
 
-// Handle mouse move events
 document.addEventListener('mousemove', onMouseMove);
 
 function onMouseMove(event) {
-    // Calculate mouse position in normalized device coordinates
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    // Get mouse coordinates for normal mouse
-    // mouse2.x = event.clientX
-    // mouse2.y = event.clientY
-
     target.x = event.clientX;
     target.y = event.clientY;
-
-    // document.getElementById("cursor").style.transform = `translate3d(${mouse2.x}px, ${mouse2.y}px, 0)`;
+    mouse.x = (target.x / window.innerWidth) * 2 - 1;
+    mouse.y = -(target.y / window.innerHeight) * 2 + 1;
 }
 
-// Set up camera position
-camera.position.z = 5;
-
-// Create an animation loop
-function animate() {
-    requestAnimationFrame(animate);
-
-    var dx = target.x - position.x, dy = target.y - position.y, vx = dx * ease, vy = dy * ease;
-
+function updateCursor() {
+    const dx = target.x - position.x;
+    const dy = target.y - position.y;
+    const vx = dx * ease;
+    const vy = dy * ease;
     position.x += vx;
     position.y += vy;
+    el.style.left = `${(position.x - elWidth / 2).toFixed()}px`;
+    el.style.top = `${(position.y - elHeight / 2).toFixed()}px`;
+}
 
-    el.style.left = (position.x - elWidth / 2).toFixed() + "px";
-    el.style.top = (position.y - elHeight / 2).toFixed() + "px";
 
-    // Rotate the cube
+
+function animate() {
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
 
@@ -86,40 +67,25 @@ function animate() {
 
     renderer.render(scene, camera);
 
-    // Update the raycaster
     raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(cube1);
 
-    // Check for intersections with the cube
-    intersects = raycaster.intersectObject(cube1);
-
+    const popup = document.getElementById('popup');
     if (intersects.length > 0) {
         const faceNormal = intersects[0].face.normal;
-
-        if (faceNormal.x === 1) {
-            document.getElementById("popup").textContent = `Projects`;
-            document.getElementById("popup").classList.remove("hidden");
-        } else if (faceNormal.x === -1) {
-            document.getElementById("popup").textContent = `Skills`;
-            document.getElementById("popup").classList.remove("hidden");
-        } else if (faceNormal.y === 1) {
-            document.getElementById("popup").textContent = `Contact`;
-            document.getElementById("popup").classList.remove("hidden");
-        } else if (faceNormal.y === -1) {
-            document.getElementById("popup").textContent = `About Me`;
-            document.getElementById("popup").classList.remove("hidden");
-        } else if (faceNormal.z === 1) {
-            document.getElementById("popup").textContent = `Certificates`;
-            document.getElementById("popup").classList.remove("hidden");
-        } else if (faceNormal.z === -1) {
-            document.getElementById("popup").textContent = `Education / Info`;
-            document.getElementById("popup").classList.remove("hidden");
+        if (Math.abs(faceNormal.x) === 1) {
+            popup.textContent = faceNormal.x === 1 ? 'Projects' : 'Skills';
+        } else if (Math.abs(faceNormal.y) === 1) {
+            popup.textContent = faceNormal.y === 1 ? 'Contact' : 'About Me';
+        } else if (Math.abs(faceNormal.z) === 1) {
+            popup.textContent = faceNormal.z === 1 ? 'Certificates' : 'Education / Info';
         }
+        popup.classList.remove('hidden');
     } else {
-        // Mouse is not over the cube
-        document.getElementById("popup").classList.add("hidden");
+        popup.classList.add('hidden');
     }
+    updateCursor();
+    requestAnimationFrame(animate);
 }
 
 animate();
-
-//---------------------------------------------------------------------------------------------------------------------

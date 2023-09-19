@@ -24,13 +24,6 @@ body {
     font-size: 2rem;
 }
 
-/*#cursor{*/
-/*    width: 20px;*/
-/*    height: 20px;*/
-/*    border: 2px solid #fff;*/
-/*    border-radius: 50%;*/
-/*}*/
-
 [id="cursor"] {
     position: absolute;
     width: 28px;
