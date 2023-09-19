@@ -71,6 +71,7 @@ function animate() {
     const intersects = raycaster.intersectObject(cube1);
 
     const popup = document.getElementById('popup');
+    const intro = document.getElementById('introduction');
     if (intersects.length > 0) {
         const faceNormal = intersects[0].face.normal;
         if (Math.abs(faceNormal.x) === 1) {
@@ -81,8 +82,18 @@ function animate() {
             popup.textContent = faceNormal.z === 1 ? 'Certificates' : 'Education / Info';
         }
         popup.classList.remove('hidden');
+        intro.classList.add('hidden');
+        const cursor = document.getElementById('cursor');
+        const scaleFactor = 1.7;
+
+        cursor.style.transform = `scale(${scaleFactor})`;
+        cursor.style.backgroundColor = 'red';
     } else {
         popup.classList.add('hidden');
+        intro.classList.remove('hidden');
+        const cursor = document.getElementById('cursor');
+        cursor.style.transform = 'scale(1)';
+        cursor.style.backgroundColor = 'white';
     }
     updateCursor();
     requestAnimationFrame(animate);
