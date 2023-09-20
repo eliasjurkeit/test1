@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import './style.css';
-import {func} from "three/addons/nodes/code/FunctionNode.js";
+//when esc then close (needs to be in html)
+//use orbit controls
+//make text unselectable
 
 const container = document.getElementById('container');
 const scene = new THREE.Scene();
