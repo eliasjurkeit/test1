@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import './style.css';
+import {func} from "three/addons/nodes/code/FunctionNode.js";
 
 const container = document.getElementById('container');
 const scene = new THREE.Scene();
@@ -70,14 +71,15 @@ function animate() {
 
     const popup = document.getElementById('popup');
     const intro = document.getElementById('introduction');
-    if (intersects.length > 0) {
+    const hellyeah = document.getElementById("hellyeah");
+    if (intersects.length > 0 && hellyeah.textContent === "false") {
         const faceNormal = intersects[0].face.normal;
         if (Math.abs(faceNormal.x) === 1) {
             popup.textContent = faceNormal.x === 1 ? 'Projects' : 'Skills';
         } else if (Math.abs(faceNormal.y) === 1) {
             popup.textContent = faceNormal.y === 1 ? 'Contact' : 'About Me';
         } else if (Math.abs(faceNormal.z) === 1) {
-            popup.textContent = faceNormal.z === 1 ? 'Certificates' : 'Education / Info';
+            popup.textContent = faceNormal.z === 1 ? 'Certificates' : 'Education';
         }
         popup.classList.remove('hidden');
         intro.classList.add('hidden');
@@ -99,3 +101,40 @@ function animate() {
 }
 
 animate();
+
+//----------------------------------------------------------------------------
+
+document.addEventListener("click", onMouseClick);
+
+function onMouseClick(event){
+    if (document.getElementById("popup").textContent === "Projects"){
+        document.getElementById("projects").classList.remove("hidden")
+        document.getElementById("close").classList.remove("hidden")
+        document.getElementById("hellyeah").textContent = "true"
+    }
+    if (document.getElementById("popup").textContent === "Skills"){
+        document.getElementById("skills").classList.remove("hidden")
+        document.getElementById("close").classList.remove("hidden")
+        document.getElementById("hellyeah").textContent = "true"
+    }
+    if (document.getElementById("popup").textContent === "Contact"){
+        document.getElementById("contact").classList.remove("hidden")
+        document.getElementById("close").classList.remove("hidden")
+        document.getElementById("hellyeah").textContent = "true"
+    }
+    if (document.getElementById("popup").textContent === "About Me"){
+        document.getElementById("about").classList.remove("hidden")
+        document.getElementById("close").classList.remove("hidden")
+        document.getElementById("hellyeah").textContent = "true"
+    }
+    if (document.getElementById("popup").textContent === "Certificates"){
+        document.getElementById("certs").classList.remove("hidden")
+        document.getElementById("close").classList.remove("hidden")
+        document.getElementById("hellyeah").textContent = "true"
+    }
+    if (document.getElementById("popup").textContent === "Education"){
+        document.getElementById("education").classList.remove("hidden")
+        document.getElementById("close").classList.remove("hidden")
+        document.getElementById("hellyeah").textContent = "true"
+    }
+}

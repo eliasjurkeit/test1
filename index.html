@@ -14,25 +14,37 @@
     <p>Learn more about me by clicking and dragging the cube and selecting a side!</p>
 </div>
 <div id="projects" class="hidden">
-    PROJECTS
+    <p>PROJECTS</p>
 </div>
 <div id="skills" class="hidden">
-    SKILLS
+    <p>SKILLS</p>
 </div>
 <div id="contact" class="hidden">
-    CONTACT
+    <p>CONTACT</p>
 </div>
-<div id="aboutme" class="hidden">
-    ABOUT ME
+<div id="about" class="hidden">
+    <p>ABOUT</p>
 </div>
-<div id="certificates" class="hidden">
-    CERTIFICATES
+<div id="certs" class="hidden">
+    <p>CERTIFICATES</p>
 </div>
 <div id="education" class="hidden">
-    EDUCATION / INFO
+    <p>EDUCATION</p>
 </div>
-<div id="close" class="hidden">X</div>
-<div id="cursor"></div>
+<div id="hellyeah" class="hidden">false</div>
+<div id="close" class="hidden"  style="cursor: none" onclick="
+document.getElementById('projects').classList.add('hidden');
+document.getElementById('skills').classList.add('hidden');
+document.getElementById('contact').classList.add('hidden');
+document.getElementById('about').classList.add('hidden');
+document.getElementById('certs').classList.add('hidden');
+document.getElementById('education').classList.add('hidden');
+document.getElementById('close').classList.add('hidden')
+document.getElementById('hellyeah').textContent = 'false'"
+>
+    X
+</div>
+<div id="cursor" style="pointer-events: none; cursor: none;"></div>
 <script type="module" src="/main.js"></script>
 </body>
 </html>

@@ -42,7 +42,7 @@ body {
     border: 3px solid black;
 }
 
-#projects, #aboutme, #skills, #contact, #certificates, #education{
+#projects, #about, #skills, #contact, #certs, #education{
     position: fixed;
     transition: opacity 0.7s ease;
     background: rgba(255, 255, 255, 0.25); /* Adjust alpha for transparency */
