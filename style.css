@@ -59,7 +59,7 @@ body {
 #close{
     position: fixed;
     transition: opacity 0.7s ease;
-    font-size: 3rem;
+    font-size: 10rem;
     top: 20px;
     left: 20px;
 }
