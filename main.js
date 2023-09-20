@@ -36,57 +36,46 @@ const target = {x: width / 2, y: height / 2};
 const position = {x: height, y: width};
 const ease = 0.085;
 
-let closable = false;
+let modalOpen = false;
+
+let overXIcon = false;
 
 document.addEventListener('mousemove', onMouseMove);
 
+document.addEventListener('click', onMouseClick);
 
-//make switch when site has been clicked, determine from there and not with click event. REMOVE CLICK LISTENER
-document.addEventListener('click', () => {
-    const popup = document.getElementById('popup');
-    const close = document.getElementById('close');
-    if (popup.textContent !== ""){
-        close.classList.remove('hidden');
-    } else {
-        close.classList.add('hidden');
-    }
-    if (popup.textContent === 'Projects') {
-        document.getElementById('projects').classList.remove('hidden')
-    } else {
-        document.getElementById('projects').classList.add('hidden')
-    }
-    if (popup.textContent === 'Skills') {
-        document.getElementById('skills').classList.remove('hidden')
-    } else {
-        document.getElementById('skills').classList.add('hidden')
-    }
-    if (popup.textContent === 'Contact') {
-        document.getElementById('contact').classList.remove('hidden')
-    } else {
-        document.getElementById('contact').classList.add('hidden')
-    }
-    if (popup.textContent === 'About Me') {
-        document.getElementById('aboutme').classList.remove('hidden')
-    } else {
-        document.getElementById('aboutme').classList.add('hidden')
-    }
-    if (popup.textContent === 'Certificates') {
-        document.getElementById('certificates').classList.remove('hidden')
-    } else {
-        document.getElementById('certificates').classList.add('hidden')
-    }
-    if (popup.textContent === 'Education / Info') {
-        document.getElementById('education').classList.remove('hidden')
-    } else {
-        document.getElementById('education').classList.add('hidden')
-    }
+document.getElementById("close").addEventListener('mouseenter', () => {
+    overXIcon = true
+    console.log("rein")
 });
+
+document.getElementById("close").addEventListener('mouseleave', () => {
+    overXIcon = false
+    console.log("raus")
+})
 
 function onMouseMove(event) {
     target.x = event.clientX;
     target.y = event.clientY;
     mouse.x = (target.x / window.innerWidth) * 2 - 1;
     mouse.y = -(target.y / window.innerHeight) * 2 + 1;
+}
+
+function onMouseClick(event) {
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(cube1);
+    if (intersects.length > 0) {
+        if (document.getElementById("popup").textContent === "Projects"){
+            document.getElementById("projects").classList.remove("hidden")
+            document.getElementById("close").classList.remove("hidden")
+            modalOpen = true;
+        }
+    } else if (overXIcon){
+        document.getElementById("projects").classList.add("hidden")
+        document.getElementById("close").classList.add("hidden")
+    } else {
+        console.log("nah")
+    }
 }
 
 function updateCursor() {
@@ -115,7 +104,7 @@ function animate() {
 
     const popup = document.getElementById('popup');
     const intro = document.getElementById('introduction');
-    if (intersects.length > 0 && !closable) {
+    if (intersects.length > 0 && !modalOpen) {
         const faceNormal = intersects[0].face.normal;
         if (Math.abs(faceNormal.x) === 1) {
             popup.textContent = faceNormal.x === 1 ? 'Projects' : 'Skills';
