@@ -40,6 +40,8 @@ let closable = false;
 
 document.addEventListener('mousemove', onMouseMove);
 
+
+//make switch when site has been clicked, determine from there and not with click event. REMOVE CLICK LISTENER
 document.addEventListener('click', () => {
     const popup = document.getElementById('popup');
     const close = document.getElementById('close');
