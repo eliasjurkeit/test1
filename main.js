@@ -79,7 +79,7 @@ function animate() {
         } else if (Math.abs(faceNormal.y) === 1) {
             popup.textContent = faceNormal.y === 1 ? 'Contact' : 'About Me';
         } else if (Math.abs(faceNormal.z) === 1) {
-            popup.textContent = faceNormal.z === 1 ? 'Certificates' : 'Education';
+            popup.textContent = faceNormal.z === 1 ? 'Certificates & Education' : 'Info';
         }
         popup.classList.remove('hidden');
         intro.classList.add('hidden');
@@ -127,14 +127,18 @@ function onMouseClick(event){
         document.getElementById("close").classList.remove("hidden")
         document.getElementById("hellyeah").textContent = "true"
     }
-    if (document.getElementById("popup").textContent === "Certificates"){
+    if (document.getElementById("popup").textContent === "Certificates & Education"){
         document.getElementById("certs").classList.remove("hidden")
         document.getElementById("close").classList.remove("hidden")
         document.getElementById("hellyeah").textContent = "true"
     }
-    if (document.getElementById("popup").textContent === "Education"){
-        document.getElementById("education").classList.remove("hidden")
+    if (document.getElementById("popup").textContent === "Info"){
+        document.getElementById("info").classList.remove("hidden")
         document.getElementById("close").classList.remove("hidden")
         document.getElementById("hellyeah").textContent = "true"
     }
 }
+
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+});
