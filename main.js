@@ -36,51 +36,7 @@ const target = {x: width / 2, y: height / 2};
 const position = {x: height, y: width};
 const ease = 0.085;
 
-let closable = false;
-
 document.addEventListener('mousemove', onMouseMove);
-
-
-//make switch when site has been clicked, determine from there and not with click event. REMOVE CLICK LISTENER
-document.addEventListener('click', () => {
-    const popup = document.getElementById('popup');
-    const close = document.getElementById('close');
-    if (popup.textContent !== ""){
-        close.classList.remove('hidden');
-    } else {
-        close.classList.add('hidden');
-    }
-    if (popup.textContent === 'Projects') {
-        document.getElementById('projects').classList.remove('hidden')
-    } else {
-        document.getElementById('projects').classList.add('hidden')
-    }
-    if (popup.textContent === 'Skills') {
-        document.getElementById('skills').classList.remove('hidden')
-    } else {
-        document.getElementById('skills').classList.add('hidden')
-    }
-    if (popup.textContent === 'Contact') {
-        document.getElementById('contact').classList.remove('hidden')
-    } else {
-        document.getElementById('contact').classList.add('hidden')
-    }
-    if (popup.textContent === 'About Me') {
-        document.getElementById('aboutme').classList.remove('hidden')
-    } else {
-        document.getElementById('aboutme').classList.add('hidden')
-    }
-    if (popup.textContent === 'Certificates') {
-        document.getElementById('certificates').classList.remove('hidden')
-    } else {
-        document.getElementById('certificates').classList.add('hidden')
-    }
-    if (popup.textContent === 'Education / Info') {
-        document.getElementById('education').classList.remove('hidden')
-    } else {
-        document.getElementById('education').classList.add('hidden')
-    }
-});
 
 function onMouseMove(event) {
     target.x = event.clientX;
@@ -100,7 +56,6 @@ function updateCursor() {
     el.style.top = `${(position.y - elHeight / 2).toFixed()}px`;
 }
 
-
 function animate() {
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
@@ -115,7 +70,7 @@ function animate() {
 
     const popup = document.getElementById('popup');
     const intro = document.getElementById('introduction');
-    if (intersects.length > 0 && !closable) {
+    if (intersects.length > 0) {
         const faceNormal = intersects[0].face.normal;
         if (Math.abs(faceNormal.x) === 1) {
             popup.textContent = faceNormal.x === 1 ? 'Projects' : 'Skills';
