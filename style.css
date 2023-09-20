@@ -41,3 +41,28 @@ body {
     border-radius: 50%;
     border: 3px solid black;
 }
+
+#projects, #aboutme, #skills, #contact, #certificates, #education{
+    position: fixed;
+    transition: opacity 0.7s ease;
+    background: rgba(255, 255, 255, 0.25); /* Adjust alpha for transparency */
+    backdrop-filter: blur(10px); /* Adjust the blur effect */
+    height: 100vh;
+    text-align: center;
+    font-size: 4rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*#projects p, #aboutme p, #skills p, #contact p, #certificates p, #education p{*/
+/*}*/
+
+#close{
+    position: fixed;
+    transition: opacity 0.7s ease;
+    font-size: 3rem;
+    top: 20px;
+    left: 20px;
+}
