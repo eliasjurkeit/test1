@@ -1,36 +1,32 @@
 import * as THREE from 'three';
 import './style.css';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { ArcballControls } from 'three/addons/controls/ArcballControls.js';
 
-//when esc then close (needs to be in html)
-//use orbit controls
-//make text unselectable
+const cameras = [ 'Orthographic', 'Perspective' ];
+const cameraType = { type: 'Perspective' };
 
-const container = document.getElementById('container');
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x89CFF0);
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.z = 5;
-const renderer = new THREE.WebGLRenderer({antialias: true});
-renderer.setSize(window.innerWidth, window.innerHeight);
-container.appendChild(renderer.domElement);
-const controls = new OrbitControls( camera, renderer.domElement );
-controls.minDistance = 2;
-controls.maxDistance = 10;
-controls.target.set( 0, 0, - 0.2 );
-controls.update();
+const perspectiveDistance = 2.5;
+const orthographicDistance = 120;
 
-const invisCubeGeometry = new THREE.BoxGeometry();
-const invisCubeMaterial = new THREE.MeshBasicMaterial({opacity: 0, transparent: true});
-const invisCube = new THREE.Mesh(invisCubeGeometry, invisCubeMaterial);
-invisCube.scale.set(3, 3, 3);
-scene.add(invisCube);
+let camera, controls, scene, renderer, gui;
+let folderOptions, folderAnimations;
 
+
+// const container = document.getElementById('container');
+// scene = new THREE.Scene();
+// scene.background = new THREE.Color(0x89CFF0);
+// camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+// camera.position.z = 5;
+// renderer = new THREE.WebGLRenderer({antialias: true});
+// renderer.setSize(window.innerWidth, window.innerHeight);
+// container.appendChild(renderer.domElement);
 
 let modelCube;
+
 const loader = new GLTFLoader();
-loader.load( 'CUBE_DONE.glb', function ( gltf ) {
+loader.load( '/assets/CUBE_DONE.glb', function ( gltf ) {
     scene.add( gltf.scene );
     modelCube = gltf.scene;
     modelCube.scale.set(1, 1, 1);
@@ -39,121 +35,191 @@ loader.load( 'CUBE_DONE.glb', function ( gltf ) {
 } );
 
 
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+const arcballGui = {
 
-// const el = document.getElementById("cursor");
-// const elWidth = el.offsetWidth;
-// const elHeight = el.offsetHeight;
- const {innerWidth: width, innerHeight: height} = window;
-const target = {x: width / 2, y: height / 2};
-// const position = {x: height, y: width};
-// const ease = 0.085;
+    gizmoVisible: true,
 
-document.addEventListener('mousemove', onMouseMove);
+    setArcballControls: function () {
 
-function onMouseMove(event) {
-    target.x = event.clientX;
-    target.y = event.clientY;
-    mouse.x = (target.x / window.innerWidth) * 2 - 1;
-    mouse.y = -(target.y / window.innerHeight) * 2 + 1;
+        controls = new ArcballControls( camera, renderer.domElement, scene );
+        controls.addEventListener( 'change', render );
+
+        this.gizmoVisible = true;
+
+        this.populateGui();
+
+    },
+
+    populateGui: function () {
+
+        folderOptions.add( controls, 'enabled' ).name( 'Enable controls' );
+        folderOptions.add( controls, 'enableGrid' ).name( 'Enable Grid' );
+        folderOptions.add( controls, 'enableRotate' ).name( 'Enable rotate' );
+        folderOptions.add( controls, 'enablePan' ).name( 'Enable pan' );
+        folderOptions.add( controls, 'enableZoom' ).name( 'Enable zoom' );
+        folderOptions.add( controls, 'cursorZoom' ).name( 'Cursor zoom' );
+        folderOptions.add( controls, 'adjustNearFar' ).name( 'adjust near/far' );
+        folderOptions.add( controls, 'scaleFactor', 1.1, 10, 0.1 ).name( 'Scale factor' );
+        folderOptions.add( controls, 'minDistance', 0, 50, 0.5 ).name( 'Min distance' );
+        folderOptions.add( controls, 'maxDistance', 0, 50, 0.5 ).name( 'Max distance' );
+        folderOptions.add( controls, 'minZoom', 0, 50, 0.5 ).name( 'Min zoom' );
+        folderOptions.add( controls, 'maxZoom', 0, 50, 0.5 ).name( 'Max zoom' );
+        folderOptions.add( arcballGui, 'gizmoVisible' ).name( 'Show gizmos' ).onChange( function () {
+
+            controls.setGizmosVisible( arcballGui.gizmoVisible );
+
+        } );
+        folderOptions.add( controls, 'copyState' ).name( 'Copy state(ctrl+c)' );
+        folderOptions.add( controls, 'pasteState' ).name( 'Paste state(ctrl+v)' );
+        folderOptions.add( controls, 'reset' ).name( 'Reset' );
+        folderAnimations.add( controls, 'enableAnimations' ).name( 'Enable anim.' );
+        folderAnimations.add( controls, 'dampingFactor', 0, 100, 1 ).name( 'Damping' );
+        folderAnimations.add( controls, 'wMax', 0, 100, 1 ).name( 'Angular spd' );
+
+    }
+
+};
+
+init();
+
+function init() {
+
+    const container = document.getElementById('container');
+    document.body.appendChild( container );
+
+    renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = 3;
+    renderer.domElement.style.background = 'linear-gradient( 180deg, rgba( 0,0,0,1 ) 0%, rgba( 128,128,255,1 ) 100% )';
+    container.appendChild( renderer.domElement );
+
+    //
+
+    scene = new THREE.Scene();
+
+    camera = makePerspectiveCamera();
+    camera.position.set( 0, 0, perspectiveDistance );
+
+    const material = new THREE.MeshStandardMaterial();
+
+    new GLTFLoader()
+        .load( 'assets/CUBE_DONE.glb', function ( gltf ) {
+
+
+
+
+            scene.add( gltf.scene );
+            render();
+
+
+
+            window.addEventListener( 'resize', onWindowResize );
+
+            //
+
+            gui = new GUI();
+            gui.add( cameraType, 'type', cameras ).name( 'Choose Camera' ).onChange( function () {
+
+                setCamera( cameraType.type );
+
+            } );
+
+            folderOptions = gui.addFolder( 'Arcball parameters' );
+            folderAnimations = folderOptions.addFolder( 'Animations' );
+
+            arcballGui.setArcballControls();
+
+            render();
+
+        } );
+
 }
 
-// function updateCursor() {
-//     const dx = target.x - position.x;
-//     const dy = target.y - position.y;
-//     const vx = dx * ease;
-//     const vy = dy * ease;
-//     position.x += vx;
-//     position.y += vy;
-//     el.style.left = `${(position.x - elWidth / 2).toFixed()}px`;
-//     el.style.top = `${(position.y - elHeight / 2).toFixed()}px`;
+function makeOrthographicCamera() {
+
+    const halfFovV = THREE.MathUtils.DEG2RAD * 45 * 0.5;
+    const halfFovH = Math.atan( ( window.innerWidth / window.innerHeight ) * Math.tan( halfFovV ) );
+
+    const halfW = perspectiveDistance * Math.tan( halfFovH );
+    const halfH = perspectiveDistance * Math.tan( halfFovV );
+    const near = 0.01;
+    const far = 2000;
+    const newCamera = new THREE.OrthographicCamera( - halfW, halfW, halfH, - halfH, near, far );
+    return newCamera;
+
+}
+
+function makePerspectiveCamera() {
+
+    const fov = 45;
+    const aspect = window.innerWidth / window.innerHeight;
+    const near = 0.01;
+    const far = 2000;
+    const newCamera = new THREE.PerspectiveCamera( fov, aspect, near, far );
+    return newCamera;
+
+}
+
+function onWindowResize() {
+
+    if ( camera.type == 'OrthographicCamera' ) {
+
+        const halfFovV = THREE.MathUtils.DEG2RAD * 45 * 0.5;
+        const halfFovH = Math.atan( ( window.innerWidth / window.innerHeight ) * Math.tan( halfFovV ) );
+
+        const halfW = perspectiveDistance * Math.tan( halfFovH );
+        const halfH = perspectiveDistance * Math.tan( halfFovV );
+        camera.left = - halfW;
+        camera.right = halfW;
+        camera.top = halfH;
+        camera.bottom = - halfH;
+
+    } else if ( camera.type == 'PerspectiveCamera' ) {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+
+    }
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+    render();
+
+}
+
+function render() {
+
+    renderer.render( scene, camera );
+
+}
+
+function setCamera( type ) {
+
+    if ( type == 'Orthographic' ) {
+
+        camera = makeOrthographicCamera();
+        camera.position.set( 0, 0, orthographicDistance );
+
+
+    } else if ( type == 'Perspective' ) {
+
+        camera = makePerspectiveCamera();
+        camera.position.set( 0, 0, perspectiveDistance );
+
+    }
+
+    controls.setCamera( camera );
+
+    render();
+
+}
+
+
+// function animate() {
+//     requestAnimationFrame(animate);
+//     renderer.render(scene, camera);
 // }
-
-function animate() {
-    invisCube.rotation.x += 0.01;
-    invisCube.rotation.y += 0.01;
-
-    if (modelCube) {
-        modelCube.rotation.x += 0.01;
-        modelCube.rotation.y += 0.01;
-    }
-    renderer.render(scene, camera);
-
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObject(invisCube);
-
-    const popup = document.getElementById('popup');
-    const intro = document.getElementById('introduction');
-    const hellyeah = document.getElementById("hellyeah");
-    if (intersects.length > 0 && hellyeah.textContent === "false") {
-        const faceNormal = intersects[0].face.normal;
-        if (Math.abs(faceNormal.x) === 1) {
-            popup.textContent = faceNormal.x === 1 ? 'Projects' : 'Skills';
-        } else if (Math.abs(faceNormal.y) === 1) {
-            popup.textContent = faceNormal.y === 1 ? 'Contact' : 'About Me';
-        } else if (Math.abs(faceNormal.z) === 1) {
-            popup.textContent = faceNormal.z === 1 ? 'Certificates & Education' : 'Info';
-        }
-        popup.classList.remove('hidden');
-        intro.classList.add('hidden');
-        // const cursor = document.getElementById('cursor');
-        // const scaleFactor = 1.7;
-        //
-        // cursor.style.transform = `scale(${scaleFactor})`;
-        // cursor.style.backgroundColor = 'red';
-    } else {
-        popup.textContent = '';
-        popup.classList.add('hidden');
-        intro.classList.remove('hidden');
-        // const cursor = document.getElementById('cursor');
-        // cursor.style.transform = 'scale(1)';
-        // cursor.style.backgroundColor = 'white';
-    }
-    //updateCursor();
-    controls.update();
-    requestAnimationFrame(animate);
-}
-
-animate();
-
-//----------------------------------------------------------------------------
-
-document.addEventListener("click", onMouseClick);
-
-function onMouseClick(event){
-    if (document.getElementById("popup").textContent === "Projects"){
-        document.getElementById("projects").classList.remove("hidden")
-        document.getElementById("close").classList.remove("hidden")
-        document.getElementById("hellyeah").textContent = "true"
-    }
-    if (document.getElementById("popup").textContent === "Skills"){
-        document.getElementById("skills").classList.remove("hidden")
-        document.getElementById("close").classList.remove("hidden")
-        document.getElementById("hellyeah").textContent = "true"
-    }
-    if (document.getElementById("popup").textContent === "Contact"){
-        document.getElementById("contact").classList.remove("hidden")
-        document.getElementById("close").classList.remove("hidden")
-        document.getElementById("hellyeah").textContent = "true"
-    }
-    if (document.getElementById("popup").textContent === "About Me"){
-        document.getElementById("about").classList.remove("hidden")
-        document.getElementById("close").classList.remove("hidden")
-        document.getElementById("hellyeah").textContent = "true"
-    }
-    if (document.getElementById("popup").textContent === "Certificates & Education"){
-        document.getElementById("certs").classList.remove("hidden")
-        document.getElementById("close").classList.remove("hidden")
-        document.getElementById("hellyeah").textContent = "true"
-    }
-    if (document.getElementById("popup").textContent === "Info"){
-        document.getElementById("info").classList.remove("hidden")
-        document.getElementById("close").classList.remove("hidden")
-        document.getElementById("hellyeah").textContent = "true"
-    }
-}
-
-document.addEventListener('contextmenu', function (e) {
-    e.preventDefault();
-});
+// animate();
