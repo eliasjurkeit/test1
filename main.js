@@ -1,11 +1,9 @@
 import * as THREE from 'three';
 import './style.css';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
-import { ArcballControls } from 'three/addons/controls/ArcballControls.js';
+import {ArcballControls} from 'three/addons/controls/ArcballControls.js';
 
 //have the closest icon to the camera be selected -> change in color of icon's 3d model + text in background
-
-
 
 const container = document.getElementById('container');
 const scene = new THREE.Scene();
@@ -16,8 +14,7 @@ const renderer = new THREE.WebGLRenderer({antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 const controls = new ArcballControls( camera, renderer.domElement, scene );
-controls.addEventListener( 'change', render );
-
+controls.addEventListener('change', render);
 
 let modelCube;
 const loader = new GLTFLoader();
