@@ -39,6 +39,7 @@ function init() {
 
     // Content
     const video = document.getElementById( 'video' );
+    video.muted = true;
     video.play();
     video.addEventListener( 'play', function () {
         this.currentTime = 60;
