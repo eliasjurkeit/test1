@@ -65,7 +65,7 @@ function init() {
     })
 
     const fontLoader = new FontLoader();
-    fontLoader.load('/assets/Bakery_Regular.json', function (font) {
+    fontLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/Bakery_Regular.json', function (font) {
         const textGeometry = new TextGeometry('Projects', {
             font: font,
             size: 2,
@@ -84,7 +84,7 @@ function init() {
     });
 
     const hdrEquirect = new RGBELoader().load(
-        "assets/empty_warehouse_01_2k.hdr",
+        "https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/empty_warehouse_01_2k.hdr",
         () => {
             hdrEquirect.mapping = THREE.EquirectangularReflectionMapping;
         }, undefined, (error) => {
@@ -93,7 +93,7 @@ function init() {
     );
 
     const textureLoader = new THREE.TextureLoader();
-    const normalMapTexture = textureLoader.load("assets/normal.jpg", () => {}, undefined, (error) => {
+    const normalMapTexture = textureLoader.load("https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/normal.jpg", () => {}, undefined, (error) => {
         console.error(error);
     });
     normalMapTexture.wrapS = THREE.RepeatWrapping;
@@ -112,7 +112,7 @@ function init() {
     });
 
     const gltfLoader = new GLTFLoader();
-    gltfLoader.load('assets/CUBE_DONE.glb', function (gltf) {
+    gltfLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/CUBE_DONE.glb', function (gltf) {
         gltf.scene.traverse( function ( child ) {
             if ( child.isMesh ) {
                 //child.projectionMaterial.envMap = modelEnvMap;
@@ -144,7 +144,7 @@ function init() {
     // rectLight.add( rectLightHelper );
 
 
-    gltfLoader.load('assets/call.glb', function (gltf) {
+    gltfLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/call.glb', function (gltf) {
         gltf.scene.traverse( function ( child ) {
             if ( child.isMesh ) {
                 //child.projectionMaterial.envMap = modelEnvMap;
@@ -173,7 +173,7 @@ function init() {
         console.error(error);
     });
 
-    gltfLoader.load('assets/edu.glb', function (gltf) {
+    gltfLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/edu.glb', function (gltf) {
         gltf.scene.traverse( function ( child ) {
             if ( child.isMesh ) {
                 //child.projectionMaterial.envMap = modelEnvMap;
@@ -204,7 +204,7 @@ function init() {
         console.error(error);
     });
 
-    gltfLoader.load('assets/info.glb', function (gltf) {
+    gltfLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/info.glb', function (gltf) {
         gltf.scene.traverse( function ( child ) {
             if ( child.isMesh ) {
                 //child.projectionMaterial.envMap = modelEnvMap;
@@ -234,7 +234,7 @@ function init() {
         console.error(error);
     });
 
-    gltfLoader.load('assets/person.glb', function (gltf) {
+    gltfLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/person.glb', function (gltf) {
         gltf.scene.traverse( function ( child ) {
             if ( child.isMesh ) {
                 //child.projectionMaterial.envMap = modelEnvMap;
@@ -265,7 +265,7 @@ function init() {
         console.error(error);
     });
 
-    gltfLoader.load('assets/rocket.glb', function (gltf) {
+    gltfLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/rocket.glb', function (gltf) {
         gltf.scene.traverse( function ( child ) {
             if ( child.isMesh ) {
                 //child.projectionMaterial.envMap = modelEnvMap;
@@ -295,7 +295,7 @@ function init() {
         console.error(error);
     });
 
-    gltfLoader.load('assets/tools.glb', function (gltf) {
+    gltfLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/lavatext/assets/tools.glb', function (gltf) {
         gltf.scene.traverse( function ( child ) {
             if ( child.isMesh ) {
                 //child.projectionMaterial.envMap = modelEnvMap;
