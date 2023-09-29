@@ -1,0 +1,7 @@
+Visual Improvements
+
+refraction of cube too high
+text in background is unreadable
+texture and material of icons incorrect
+apply colorful materials to the icons
+
