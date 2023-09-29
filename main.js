@@ -36,10 +36,10 @@ function init() {
 
     // TODO: Deactivate Controls
     const controls = new ArcballControls(camera, renderer.domElement, scene);
-    // controls.enableGizmos = false;
-    // controls.setGizmosVisible(false);
-    // controls.enableZoom = false;
-    // controls.enablePan = false;
+    controls.enableGizmos = false;
+    controls.setGizmosVisible(false);
+    controls.enableZoom = false;
+    controls.enablePan = false;
     controls.addEventListener('change', render);
 
 
