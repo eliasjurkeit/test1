@@ -6,6 +6,7 @@ import {TextGeometry} from 'three/addons/geometries/TextGeometry.js';
 import {FontLoader} from "three/addons/loaders/FontLoader.js";
 import {RGBELoader} from "three/addons/loaders/RGBELoader.js";
 import ProjectedMaterial from 'three-projected-material'
+import {RectAreaLightHelper} from "three/addons/helpers/RectAreaLightHelper.js";
 
 
 //have the closest icon to the camera be selected -> change in color of icon's 3d model + text in background
@@ -27,6 +28,7 @@ function init() {
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
+    //scene.background = new THREE.Color(0x0000FF);
 
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 3000);
     scene.add(camera)
@@ -34,10 +36,10 @@ function init() {
 
     // TODO: Deactivate Controls
     const controls = new ArcballControls(camera, renderer.domElement, scene);
-    controls.enableGizmos = false;
-    controls.setGizmosVisible(false);
-    controls.enableZoom = false;
-    controls.enablePan = false;
+    // controls.enableGizmos = false;
+    // controls.setGizmosVisible(false);
+    // controls.enableZoom = false;
+    // controls.enablePan = false;
     controls.addEventListener('change', render);
 
 
@@ -115,6 +117,7 @@ function init() {
             if ( child.isMesh ) {
                 //child.projectionMaterial.envMap = modelEnvMap;
                 const glassCube = new THREE.Mesh(child.geometry, glassMaterial);
+                glassCube.scale.set(1, 1, 1);
                 scene.add(glassCube);
             }
         } );
@@ -125,6 +128,206 @@ function init() {
     }, undefined, function (error) {
         console.error(error);
     });
+
+
+    // Tried Rectangular Light for selection
+    // const width = 1;
+    // const height = 1;
+    // const intensity = 1;
+    // const rectLight = new THREE.RectAreaLight( 0x0BBE4, intensity,  width, height );
+    // rectLight.position.set( 0, 0.75, 0 );
+    // rectLight.rotateZ(THREE.MathUtils.degToRad(-90));
+    // rectLight.rotateY(THREE.MathUtils.degToRad(90));
+    // scene.add( rectLight )
+    //
+    // const rectLightHelper = new RectAreaLightHelper( rectLight );
+    // rectLight.add( rectLightHelper );
+
+
+    gltfLoader.load('assets/call.glb', function (gltf) {
+        gltf.scene.traverse( function ( child ) {
+            if ( child.isMesh ) {
+                //child.projectionMaterial.envMap = modelEnvMap;
+                const glassCube = new THREE.Mesh(child.geometry, new THREE.MeshPhysicalMaterial({
+                    color: 0x0BBE4,
+                    roughness: 0.07,
+                    transmission: 1,
+                    thickness: 1.5,
+                    envMap: hdrEquirect,
+                    envMapIntensity: 1.5,
+                    normalMap: normalMapTexture,
+                    normalScale: new THREE.Vector2(0.05, 0.05),
+                    clearcoat: 0.1,
+                    clearcoatNormalMap: normalMapTexture,
+                }));
+                glassCube.scale.set(175, 1, 175);
+                glassCube.position.set(0, 1, 0);
+                scene.add(glassCube);
+            }
+        } );
+        //let geometry = THREE.getObjectByName('').geometry;
+        // gltf.scene.scale.set(1, 1, 1);
+        // scene.add(gltf.scene);
+        // findType(gltf.scene, 'Mesh');
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
+    gltfLoader.load('assets/edu.glb', function (gltf) {
+        gltf.scene.traverse( function ( child ) {
+            if ( child.isMesh ) {
+                //child.projectionMaterial.envMap = modelEnvMap;
+                const glassCube = new THREE.Mesh(child.geometry, new THREE.MeshPhysicalMaterial({
+                    color: 0x0BBE4,
+                    roughness: 0.07,
+                    transmission: 1,
+                    thickness: 1.5,
+                    envMap: hdrEquirect,
+                    envMapIntensity: 1.5,
+                    normalMap: normalMapTexture,
+                    normalScale: new THREE.Vector2(0.05, 0.05),
+                    clearcoat: 0.1,
+                    clearcoatNormalMap: normalMapTexture,
+                }));
+                glassCube.scale.set(175, 1, 175);
+                glassCube.rotateX(THREE.MathUtils.degToRad(90));
+                glassCube.rotateZ(THREE.MathUtils.degToRad(180));
+                glassCube.position.set(0,0 , -1);
+                scene.add(glassCube);
+            }
+        } );
+        //let geometry = THREE.getObjectByName('').geometry;
+        // gltf.scene.scale.set(1, 1, 1);
+        // scene.add(gltf.scene);
+        // findType(gltf.scene, 'Mesh');
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
+    gltfLoader.load('assets/info.glb', function (gltf) {
+        gltf.scene.traverse( function ( child ) {
+            if ( child.isMesh ) {
+                //child.projectionMaterial.envMap = modelEnvMap;
+                const glassCube = new THREE.Mesh(child.geometry, new THREE.MeshPhysicalMaterial({
+                    color: 0x0BBE4,
+                    roughness: 0.07,
+                    transmission: 1,
+                    thickness: 1.5,
+                    envMap: hdrEquirect,
+                    envMapIntensity: 1.5,
+                    normalMap: normalMapTexture,
+                    normalScale: new THREE.Vector2(0.05, 0.05),
+                    clearcoat: 0.1,
+                    clearcoatNormalMap: normalMapTexture,
+                }));
+                glassCube.scale.set(175, 1, 175);
+                glassCube.rotateX(THREE.MathUtils.degToRad(90));
+                glassCube.position.set(0,0 , 1);
+                scene.add(glassCube);
+            }
+        } );
+        //let geometry = THREE.getObjectByName('').geometry;
+        // gltf.scene.scale.set(1, 1, 1);
+        // scene.add(gltf.scene);
+        // findType(gltf.scene, 'Mesh');
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
+    gltfLoader.load('assets/person.glb', function (gltf) {
+        gltf.scene.traverse( function ( child ) {
+            if ( child.isMesh ) {
+                //child.projectionMaterial.envMap = modelEnvMap;
+                const glassCube = new THREE.Mesh(child.geometry, new THREE.MeshPhysicalMaterial({
+                    color: 0x0BBE4,
+                    roughness: 0.07,
+                    transmission: 1,
+                    thickness: 1.5,
+                    envMap: hdrEquirect,
+                    envMapIntensity: 1.5,
+                    normalMap: normalMapTexture,
+                    normalScale: new THREE.Vector2(0.05, 0.05),
+                    clearcoat: 0.1,
+                    clearcoatNormalMap: normalMapTexture,
+                }));
+                glassCube.scale.set(175, 1, 175);
+                glassCube.rotateX(THREE.MathUtils.degToRad(90));
+                glassCube.rotateZ(THREE.MathUtils.degToRad(90));
+                glassCube.position.set(-1,0 , 0);
+                scene.add(glassCube);
+            }
+        } );
+        //let geometry = THREE.getObjectByName('').geometry;
+        // gltf.scene.scale.set(1, 1, 1);
+        // scene.add(gltf.scene);
+        // findType(gltf.scene, 'Mesh');
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
+    gltfLoader.load('assets/rocket.glb', function (gltf) {
+        gltf.scene.traverse( function ( child ) {
+            if ( child.isMesh ) {
+                //child.projectionMaterial.envMap = modelEnvMap;
+                const glassCube = new THREE.Mesh(child.geometry, new THREE.MeshPhysicalMaterial({
+                    color: 0x0BBE4,
+                    roughness: 0.07,
+                    transmission: 1,
+                    thickness: 1.5,
+                    envMap: hdrEquirect,
+                    envMapIntensity: 1.5,
+                    normalMap: normalMapTexture,
+                    normalScale: new THREE.Vector2(0.05, 0.05),
+                    clearcoat: 0.1,
+                    clearcoatNormalMap: normalMapTexture,
+                }));
+                glassCube.scale.set(175, 1, 175);
+                glassCube.rotateZ(THREE.MathUtils.degToRad(90));
+                glassCube.position.set(0.75,0 , 0);
+                scene.add(glassCube);
+            }
+        } );
+        //let geometry = THREE.getObjectByName('').geometry;
+        // gltf.scene.scale.set(1, 1, 1);
+        // scene.add(gltf.scene);
+        // findType(gltf.scene, 'Mesh');
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
+    gltfLoader.load('assets/tools.glb', function (gltf) {
+        gltf.scene.traverse( function ( child ) {
+            if ( child.isMesh ) {
+                //child.projectionMaterial.envMap = modelEnvMap;
+                const glassCube = new THREE.Mesh(child.geometry, new THREE.MeshPhysicalMaterial({
+                    color: 0x0BBE4,
+                    roughness: 0.07,
+                    transmission: 1,
+                    thickness: 1.5,
+                    envMap: hdrEquirect,
+                    envMapIntensity: 1.5,
+                    normalMap: normalMapTexture,
+                    normalScale: new THREE.Vector2(0.05, 0.05),
+                    clearcoat: 0.1,
+                    clearcoatNormalMap: normalMapTexture,
+                }));
+                glassCube.scale.set(175, 1, 175);
+                glassCube.rotateX(THREE.MathUtils.degToRad(180));
+                glassCube.position.set(0.03,-1 , 0.01);
+                scene.add(glassCube);
+            }
+        } );
+        //let geometry = THREE.getObjectByName('').geometry;
+        // gltf.scene.scale.set(1, 1, 1);
+        // scene.add(gltf.scene);
+        // findType(gltf.scene, 'Mesh');
+    }, undefined, function (error) {
+        console.error(error);
+    });
+
+
+
+
 
     const ambientLight = new THREE.AmbientLight(0xFFFFFF, 10);
     scene.add(ambientLight);
