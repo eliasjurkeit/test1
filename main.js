@@ -4,11 +4,9 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {ArcballControls} from 'three/addons/controls/ArcballControls.js';
 import {TextGeometry} from 'three/addons/geometries/TextGeometry.js';
 import {FontLoader} from "three/addons/loaders/FontLoader.js";
-import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
-import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
-import {BloomPass} from 'three/addons/postprocessing/BloomPass.js';
-import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
 import {RGBELoader} from "three/addons/loaders/RGBELoader.js";
+import ProjectedMaterial from 'three-projected-material'
+
 
 //have the closest icon to the camera be selected -> change in color of icon's 3d model + text in background
 
@@ -28,10 +26,10 @@ function init() {
     container.appendChild(renderer.domElement);
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x89CFF0);
+    scene.background = new THREE.Color(0x000000);
 
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 3000);
-    //scene.add(camera)
+    scene.add(camera)
     camera.position.set(0, 0, 5);
 
     // TODO: Deactivate Controls
@@ -40,22 +38,42 @@ function init() {
 
 
     // Content
+    const video = document.getElementById( 'video' );
+    video.play();
+    video.addEventListener( 'play', function () {
+        this.currentTime = 60;
+    } );
+
+    const videoTexture = new THREE.VideoTexture( video );
+    videoTexture.colorSpace = THREE.SRGBColorSpace;
+
+    const projectionMaterial = new ProjectedMaterial({
+        camera: camera, // the camera that acts as a projector
+        texture: videoTexture, // the texture being projected
+        //textureScale: 0.8, // scale down the texture a bit
+        //textureOffset: new THREE.Vector2(0.1, 0.1), // you can translate the texture if you want
+        //cover: true, // enable background-size: cover behaviour, by default it's like background-size: contain
+        //color: '#ccc', // the color of the object if it's not projected on
+        //roughness: 0.3, // you can pass any other option that belongs to MeshPhysicalMaterial
+    })
+
     const fontLoader = new FontLoader();
     fontLoader.load('/assets/Bakery_Regular.json', function (font) {
         const textGeometry = new TextGeometry('Projects', {
             font: font,
-            size: 80,
-            height: 5,
+            size: 2,
+            height: 1,
             curveSegments: 12,
             bevelEnabled: true,
-            bevelThickness: 1,
-            bevelSize: 1,
+            bevelThickness: 0.1,
+            bevelSize: 0.1,
             bevelOffset: 0,
             bevelSegments: 5
         });
-        const projectText = new THREE.Mesh(textGeometry, new THREE.MeshBasicMaterial({color: 0x000000}));
-        projectText.position.set(-150, 0, -100);
-        scene.add(projectText);
+        const projectText = new THREE.Mesh(textGeometry, projectionMaterial);
+        projectText.position.set(-5, -0.5, -10);
+        camera.add(projectText);
+        projectionMaterial.project(projectText)
     });
 
     const hdrEquirect = new RGBELoader().load(
@@ -90,7 +108,7 @@ function init() {
     gltfLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/master/CUBE_DONE.glb', function (gltf) {
         gltf.scene.traverse( function ( child ) {
             if ( child.isMesh ) {
-                //child.material.envMap = modelEnvMap;
+                //child.projectionMaterial.envMap = modelEnvMap;
                 const glassCube = new THREE.Mesh(child.geometry, glassMaterial);
                 scene.add(glassCube);
             }
