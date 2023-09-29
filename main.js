@@ -106,7 +106,7 @@ function init() {
     });
 
     const gltfLoader = new GLTFLoader();
-    gltfLoader.load('https://raw.githubusercontent.com/eliasjurkeit/test1/master/CUBE_DONE.glb', function (gltf) {
+    gltfLoader.load('assets/CUBE_DONE.glb', function (gltf) {
         gltf.scene.traverse( function ( child ) {
             if ( child.isMesh ) {
                 //child.projectionMaterial.envMap = modelEnvMap;
